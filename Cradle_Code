@@ -1,0 +1,72 @@
+#define BLYNK_TEMPLATE_ID "TMPL3nwmb0a5x" 
+#define BLYNK_TEMPLATE_NAME "BabyCradle" 
+#define BLYNK_AUTH_TOKEN "V-CiftZpLMRpC7k4sYR939kd1WAo3w5T"
+#include <DHT.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+const int waterSensorPin = 13;
+char auth[] = "V-CiftZpLMRpC7k4sYR939kd1WAo3w5T";
+char ssid[] = "callmeandask";
+char pass[] = "sangeesar";
+DHT dht(12, DHT11);
+#include <Servo.h>
+Servo servo;
+const int servoPin = 9; 
+const int motionSensorPin = 12;
+int pos = 0;
+const int soundSensorPin = 18;
+18 | P a g e
+const int led = 15;
+void setup() {
+ pinMode(soundSensorPin, INPUT);
+ pinMode(motionSensorPin, INPUT); 
+ servo.attach(servoPin);
+ servo.write(0);
+ delay(500);
+ Serial.begin(74880);
+ pinMode(waterSensorPin, INPUT); 
+ Serial.begin(74880);
+ dht.begin();
+ Blynk.begin(auth, ssid, pass);
+}
+void loop() 
+{
+ Serial.print("SoundValue: ");
+ Serial.println(analogRead(soundSensorPin));
+ if(analogRead(soundSensorPin) > 26)
+ {
+ speedControl(); 
+ }
+ Serial.print("Motion dectected: ");
+ Serial.println(digitalRead(motionSensorPin));
+ if (digitalRead(motionSensorPin) == HIGH) 
+ {
+ led = HIGH; 
+ }
+Blynk.run();
+ float temperature = dht.readTemperature();
+ Blynk.virtualWrite(V1, temperature);
+ if (digitalRead(waterSensorPin) == HIGH) 
+ {
+ Blynk.virtualWrite(V0, "Water Detected!");
+ }
+ delay(2000);
+}
+19 | P a g e
+void ser()
+{
+ for (int i = 0; i <= 120000; i += 1) 
+ {
+ for (pos = 0; pos <= 30; pos += 1) 
+ {
+ servo.write(pos); 
+ delay(50); 
+ }
+ for (pos = 30; pos >= 0; pos -= 1) 
+ { 
+ servo.write(pos); 
+ delay(50); 
+ } 
+ }
+}
