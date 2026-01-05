@@ -1,0 +1,27 @@
+#include <Wire.h>
+#include <Servo.h>
+#include <MPU6050.h>
+MPU6050 mpu;
+Servo servo;
+int servoPin = 9; 
+void setup() 
+{
+ Wire.begin();
+ mpu.initialize();
+ servo.attach(servoPin);
+ servo.write(90); // 90 degrees
+ delay(500);
+ Serial.begin(74880);
+}
+void loop() 
+{
+20 | P a g e
+ // Read data from MPU6050
+ int16_t gyroX, gyroY, gyroZ;
+ mpu.getRotation(&gyroX, &gyroY, &gyroZ);
+ int servoAngle = map(gyroX, -32768, 32767, 0, 180);
+ servo.write(servoAngle);
+ Serial.print("GyroX: ");
+ Serial.println(gyroX);
+ delay(500);
+}
